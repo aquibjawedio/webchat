@@ -7,6 +7,7 @@ import { env } from "./config/env.js";
 
 // Import all routes
 import { healthRouter } from "./routes/health.route.js";
+import { authRouter } from "./routes/auth.route.js";
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use(cookieParser());
 // Handling all routes here
 
 app.use("/api/v1/health", healthRouter);
+app.use("/api/v1/auth", authRouter);
 
 export { app };
