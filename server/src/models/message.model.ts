@@ -2,8 +2,8 @@ import mongoose, { Schema } from "mongoose";
 
 interface IMessage {
   content: string;
-  chat: Schema.Types.ObjectId;
-  sender: Schema.Types.ObjectId;
+  chatId: Schema.Types.ObjectId;
+  senderId: Schema.Types.ObjectId;
   attachmentUrl?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -20,12 +20,12 @@ const messageSchema = new Schema<IMessage>(
       type: String,
       trim: true,
     },
-    chat: {
+    chatId: {
       type: Schema.Types.ObjectId,
       ref: "Chat",
       required: true,
     },
-    sender: {
+    senderId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,

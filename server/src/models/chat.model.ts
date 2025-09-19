@@ -8,7 +8,7 @@ interface IChat {
   name: string;
   description: string;
   avatarUrl: string;
-  creator: Schema.Types.ObjectId;
+  creatorId: Schema.Types.ObjectId;
 
   createdAt?: Date;
   updatedAt?: Date;
@@ -37,7 +37,7 @@ const chatSchema = new Schema<IChat>(
       type: Boolean,
       default: false,
     },
-    creator: {
+    creatorId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,

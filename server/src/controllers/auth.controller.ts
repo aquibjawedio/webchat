@@ -2,8 +2,8 @@ import passport from "passport";
 import { NextFunction, Request, Response } from "express";
 
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { loginWithGoogleService } from "../services/auth.service.js";
-import { googleOAuthUser } from "../schemas/auth.schema.js";
+import { loginWithGoogleService, refreshAccessTokenService } from "../services/auth.service.js";
+import { googleOAuthUser, refreshTokenSchema } from "../schemas/auth.schema.js";
 import { env } from "../config/env.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
@@ -16,6 +16,16 @@ export const loginWithPhoneController = asyncHandler(async (req: Request, res: R
 });
 
 export const refreshAccessTokenController = asyncHandler(async (req: Request, res: Response) => {
+  const { data } = refreshTokenSchema.safeParse({ token: req.cookies.refreshToken });
+
+  if (!data) {
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    return res.status(400).json(new ApiResponse(400, "Refresh token is required", {}));
+  }
+
+  const {} = await refreshAccessTokenService(data.token, res);
+
   return res.status(200).json(new ApiResponse(200, "Access token refreshed successfully", {}));
 });
 
@@ -35,8 +45,10 @@ export const loginWithGoogleController = asyncHandler(
         if (err) return next(err);
         if (!profile) return res.redirect("/auth/login");
 
+        const ip = req.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+        const userAgent = req.headers["user-agent"];
         const { accessToken, refreshToken, accessTokenOptions, refreshTokenOptions } =
-          await loginWithGoogleService(profile);
+          await loginWithGoogleService(profile, ip as string, userAgent);
 
         res.cookie("accessToken", accessToken, accessTokenOptions);
         res.cookie("refreshToken", refreshToken, refreshTokenOptions);

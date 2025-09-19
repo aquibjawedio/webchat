@@ -2,8 +2,8 @@ import mongoose, { Schema } from "mongoose";
 import { GroupChatRoles, GroupChatRolesEnum } from "../constants/user.constant.js";
 
 interface IMember {
-  chat: Schema.Types.ObjectId;
-  user: Schema.Types.ObjectId;
+  chatId: Schema.Types.ObjectId;
+  userId: Schema.Types.ObjectId;
   role: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -11,12 +11,12 @@ interface IMember {
 
 const memberSchema = new Schema<IMember>(
   {
-    chat: {
+    chatId: {
       type: Schema.Types.ObjectId,
       ref: "Chat",
       required: true,
     },
-    user: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
